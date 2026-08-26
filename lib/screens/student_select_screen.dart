@@ -28,64 +28,115 @@ class _StudentSelectScreenState extends State<StudentSelectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('이름을 선택하세요')),
+      backgroundColor: darkBg,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [bgTop, bgBottom],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [darkBg, darkBgGradientEnd],
           ),
         ),
         child: SafeArea(
-          child: FutureBuilder<List<Student>>(
-            future: _studentsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(child: Text('불러오기 실패: ${snapshot.error}'));
-              }
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final students = snapshot.data!;
-              if (students.isEmpty) {
-                return Center(
-                  child: Text(
-                    '등록된 학생이 없습니다.\n선생님 관리자 화면에서 학생을 먼저 등록해주세요.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: ink.withValues(alpha: 0.55),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                );
-              }
-              return GridView.builder(
-                padding: const EdgeInsets.all(24),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 220,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1,
-                ),
-                itemCount: students.length,
-                itemBuilder: (context, index) {
-                  final student = students[index];
-                  return _StudentTile(
-                    student: student,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => StudentBooksScreen(
-                          teacherId: widget.teacherId,
-                          student: student,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                child: Row(
+                  children: [
+                    Material(
+                      color: darkPanel,
+                      borderRadius: BorderRadius.circular(14),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(14),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: darkBorder),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_rounded,
+                            color: textLight,
+                          ),
                         ),
                       ),
                     ),
-                  );
-                },
-              );
-            },
+                    const SizedBox(width: 16),
+                    const Text(
+                      '이름을 선택하세요',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: textLight,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: FutureBuilder<List<Student>>(
+                  future: _studentsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          '불러오기 실패: ${snapshot.error}',
+                          style: const TextStyle(color: textMuted),
+                        ),
+                      );
+                    }
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: gold),
+                      );
+                    }
+                    final students = snapshot.data!;
+                    if (students.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          '등록된 학생이 없습니다.\n선생님 관리자 화면에서 학생을 먼저 등록해주세요.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: textMuted,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    }
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(24),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 220,
+                            mainAxisSpacing: 16,
+                            crossAxisSpacing: 16,
+                            childAspectRatio: 1,
+                          ),
+                      itemCount: students.length,
+                      itemBuilder: (context, index) {
+                        final student = students[index];
+                        return _StudentTile(
+                          student: student,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => StudentBooksScreen(
+                                teacherId: widget.teacherId,
+                                student: student,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -102,25 +153,29 @@ class _StudentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white.withValues(alpha: 0.85),
+      color: darkPanel,
       borderRadius: BorderRadius.circular(24),
       child: InkWell(
         borderRadius: BorderRadius.circular(24),
         onTap: onTap,
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: darkBorder),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
                 radius: 36,
-                backgroundColor: accentPurple,
+                backgroundColor: gold,
                 child: Text(
                   student.name.isNotEmpty ? student.name.substring(0, 1) : '?',
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: ink,
+                    color: Color(0xFF241C0B),
                   ),
                 ),
               ),
@@ -133,7 +188,7 @@ class _StudentTile extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: ink,
+                  color: textLight,
                 ),
               ),
             ],

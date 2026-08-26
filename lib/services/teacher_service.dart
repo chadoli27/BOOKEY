@@ -8,13 +8,17 @@ class TeacherService {
 
   final _db = Supabase.instance.client.from('teachers');
 
-  Future<TeacherProfile> ensureTeacher(String teacherId) async {
+  Future<TeacherProfile> ensureTeacher(String teacherId, {String? name}) async {
     final trimmed = teacherId.trim();
     if (trimmed.isEmpty) {
       throw ArgumentError('teacherId must not be empty');
     }
 
-    await _db.upsert({'id': trimmed}, onConflict: 'id', ignoreDuplicates: true);
+    final trimmedName = name?.trim();
+    await _db.upsert({
+      'id': trimmed,
+      if (trimmedName != null && trimmedName.isNotEmpty) 'name': trimmedName,
+    }, onConflict: 'id', ignoreDuplicates: true);
     final data = await _db.select().eq('id', trimmed).single();
     return TeacherProfile.fromMap(data);
   }

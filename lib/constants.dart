@@ -18,3 +18,24 @@ const Color bgTop = Color(0xFFDDEEFF);
 const Color bgBottom = Color(0xFFFFF0F7);
 
 const Color cardShadow = Color(0x14000000);
+
+// ── 다크 네이비 + 골드 테마 (선생님 관리자 화면) ──────────────────────────
+const Color darkBg = Color(0xFF15121F);
+const Color darkBgGradientEnd = Color(0xFF1B1729);
+const Color darkPanel = Color(0xFF1E1A2C);
+const Color darkPanelAlt = Color(0xFF211D30);
+const Color darkBorder = Color(0xFF302B44);
+const Color darkGoldPanel = Color(0xFF2B2416);
+const Color darkGoldBorder = Color(0xFF4A3B1E);
+
+const Color gold = Color(0xFFE9BA55);
+const Color goldBright = Color(0xFFF4CE72);
+const Color goldDim = Color(0xFF6B5A2E);
+
+const Color textLight = Color(0xFFF5F3FA);
+const Color textMuted = Color(0xFF9791AC);
+const Color textFaint = Color(0xFF6E6785);
+
+const Color iconBoxPurple = Color(0xFF4A4368);
+const Color iconBoxTeal = Color(0xFF33473F);
+const Color iconBoxOlive = Color(0xFF3C4331);

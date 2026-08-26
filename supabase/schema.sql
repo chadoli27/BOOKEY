@@ -58,3 +58,37 @@ create policy "teacher manages own books" on public.books
 
 create policy "teacher manages own book_reads" on public.book_reads
   for all using (auth.uid() = teacher_id) with check (auth.uid() = teacher_id);
+
+-- Storage: 책 표지 이미지를 저장하는 공개 버킷.
+-- 경로 규칙: {teacher_id}/{파일명} — teacher_id 폴더 소유자만 쓰기/삭제 가능.
+insert into storage.buckets (id, name, public)
+values ('book-covers', 'book-covers', true)
+on conflict (id) do nothing;
+
+create policy "public reads book covers" on storage.objects
+  for select using (bucket_id = 'book-covers');
+
+create policy "teacher uploads own book covers" on storage.objects
+  for insert to authenticated
+  with check (
+    bucket_id = 'book-covers'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "teacher updates own book covers" on storage.objects
+  for update to authenticated
+  using (
+    bucket_id = 'book-covers'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  )
+  with check (
+    bucket_id = 'book-covers'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+create policy "teacher deletes own book covers" on storage.objects
+  for delete to authenticated
+  using (
+    bucket_id = 'book-covers'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
